@@ -24,6 +24,12 @@ public class FilmeResource {
 	@Autowired
 	private FilmeService filmeService;
 
+	@PostMapping
+	public ResponseEntity<Filme> salvar(@RequestBody Filme filme) {
+		Filme novoFilme = filmeService.insert(filme);
+		return new ResponseEntity<>(novoFilme, HttpStatus.CREATED);
+	}
+
 	@GetMapping
 	public ResponseEntity<List<Filme>> listarTodos() {
 		List<Filme> filmes = filmeService.findAll();
@@ -40,10 +46,10 @@ public class FilmeResource {
 		}
 	}
 
-	@PostMapping
-	public ResponseEntity<Filme> salvar(@RequestBody Filme filme) {
-		Filme novoFilme = filmeService.insert(filme);
-		return new ResponseEntity<>(novoFilme, HttpStatus.CREATED);
+	@PutMapping("/{id}")
+	public ResponseEntity<Filme> update(@PathVariable Long id, @RequestBody Filme filme) {
+		filme = filmeService.update(id, filme);
+		return ResponseEntity.ok().body(filme);
 	}
 
 	@DeleteMapping("/{id}")
@@ -52,9 +58,4 @@ public class FilmeResource {
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
-	@PutMapping("/{id}")
-	public ResponseEntity<Filme> update(@PathVariable Long id, @RequestBody Filme filme) {
-		filme = filmeService.update(id, filme);
-		return ResponseEntity.ok().body(filme);
-	}
 }
