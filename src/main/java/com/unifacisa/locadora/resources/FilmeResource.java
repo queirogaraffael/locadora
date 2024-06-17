@@ -27,22 +27,23 @@ public class FilmeResource {
 	@PostMapping
 	public ResponseEntity<Filme> salvar(@RequestBody Filme filme) {
 		Filme novoFilme = filmeService.insert(filme);
-		return new ResponseEntity<>(novoFilme, HttpStatus.CREATED);
+
+		return ResponseEntity.status(HttpStatus.CREATED).body(novoFilme);
 	}
 
 	@GetMapping
 	public ResponseEntity<List<Filme>> listarTodos() {
 		List<Filme> filmes = filmeService.findAll();
-		return new ResponseEntity<>(filmes, HttpStatus.OK);
+		return ResponseEntity.ok(filmes);
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Filme> obterPorId(@PathVariable Long id) {
 		Filme filme = filmeService.findById(id);
 		if (filme != null) {
-			return new ResponseEntity<>(filme, HttpStatus.OK);
+			return ResponseEntity.ok(filme);
 		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}
 
@@ -55,7 +56,7 @@ public class FilmeResource {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deletar(@PathVariable Long id) {
 		filmeService.delete(id);
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 
 }
