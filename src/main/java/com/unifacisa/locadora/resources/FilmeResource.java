@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +32,7 @@ public class FilmeResource {
         Filme novoFilme = filmeService.insert(filme);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoFilme);
     }
+
 
     @Operation(description = "Busca todos os filmes")
     @ApiResponse(responseCode = "200", description = "Retorna a lista de filmes")
