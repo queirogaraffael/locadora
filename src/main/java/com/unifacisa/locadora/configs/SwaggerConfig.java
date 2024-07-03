@@ -9,12 +9,15 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SwaggerConfig {
-git
+
     @Bean
     public OpenAPI springShopOpenAPI() {
         return new OpenAPI()
                 .info(new Info().title("Locadora API")
-                        .description("API para gerenciamento de filmes na locadora")
+                        .description("O projeto \"locadora\" é uma API para gerenciamento de filmes na locadora. Ele " +
+                                "utiliza Redis para caching e foi desenvolvido em Java 17 com Spring Boot. " +
+                                "As dependências incluem Spring Data JPA, Spring Web, H2 database, " +
+                                "Springdoc OpenAPI, Redis e Caching. O projeto é gerenciado com Maven.")
                         .version("0.0.1")
                         .license(new License().name("Apache 2.0").url("http://springdoc.org")))
                 .externalDocs(new ExternalDocumentation()
