@@ -42,7 +42,9 @@ public class FilmeService {
     @Transactional
     @CacheEvict(value = {"filmesCache", "filmeCache"}, key = "#id")
     public Filme update(Long id, Filme filmeUpdated) {
+
         Optional<Filme> optionalFilme = filmeRepository.findById(id);
+
         if (optionalFilme.isPresent()) {
             Filme filme = optionalFilme.get();
             filme.setNome(filmeUpdated.getNome());

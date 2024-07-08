@@ -22,7 +22,7 @@ public class FilmeResource {
     @Autowired
     private FilmeService filmeService;
 
-    @Operation(description = "Adiciona filme")
+    @Operation(summary = "Adiciona filme")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Filme criado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Requisição inválida")
@@ -34,7 +34,7 @@ public class FilmeResource {
     }
 
 
-    @Operation(description = "Busca todos os filmes")
+    @Operation(summary = "Busca todos os filmes")
     @ApiResponse(responseCode = "200", description = "Retorna a lista de filmes")
     @GetMapping
     public ResponseEntity<List<Filme>> listarTodos() {
@@ -43,7 +43,7 @@ public class FilmeResource {
     }
 
 
-    @Operation(description = "Busca filme pelo id")
+    @Operation(summary = "Busca filme pelo id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Retorna o filme"),
             @ApiResponse(responseCode = "404", description = "Não existe filme com este ID")
@@ -59,25 +59,24 @@ public class FilmeResource {
         }
     }
 
-    @Operation(description = "Modifica filme pelo ID")
+    @Operation(summary = "Modifica filme pelo ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Filme atualizado com sucesso."),
             @ApiResponse(responseCode = "404", description = "Filme com ID não encontrado.")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Filme> update(@PathVariable Long id, @RequestBody Filme filme) {
-        Optional<Filme> optionalFilme = filmeService.findById(id);
+    public ResponseEntity<Filme> update(@PathVariable Long id, @RequestBody Filme filmeAtualizado) {
+        Filme updatedFilme = filmeService.update(id, filmeAtualizado);
 
-        if (optionalFilme.isEmpty()) {
+        if (updatedFilme == null) {
             return ResponseEntity.notFound().build();
         } else {
-            Filme updatedFilme = filmeService.update(id, filme);
             return ResponseEntity.ok(updatedFilme);
         }
     }
 
 
-    @Operation(description = "Deleta filme pelo id")
+    @Operation(summary = "Deleta filme pelo id")
     @ApiResponse(responseCode = "204", description = "Filme deletado com sucesso")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
