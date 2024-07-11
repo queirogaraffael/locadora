@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "tb_filmes")
@@ -17,20 +20,36 @@ public class Filme implements Serializable {
     private Long id;
     private String nome;
     private String diretor;
-    private String categoria;
+
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "FILME_CATEGORIA", joinColumns = @JoinColumn(name = "filme_id"),
+            inverseJoinColumns = @JoinColumn(name = "categoria_id"))
+    private Set<Categoria> categorias = new HashSet<>();
+
 
     public Filme() {
     }
 
-    public Filme(Long id, String nome, String diretor, String categoria) {
+    public Filme(Long id, String nome, String diretor) {
         this.id = id;
         this.nome = nome;
         this.diretor = diretor;
-        this.categoria = categoria;
+    }
+
+    public Filme(Long id, String nome, String diretor, Set<Categoria> categorias) {
+        this.id = id;
+        this.nome = nome;
+        this.diretor = diretor;
+        this.categorias = categorias;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -49,13 +68,25 @@ public class Filme implements Serializable {
         this.diretor = diretor;
     }
 
-    public String getCategoria() {
-        return categoria;
+    public Set<Categoria> getCategorias() {
+        return categorias;
     }
 
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
+    public void setCategorias(Set<Categoria> categorias) {
+        this.categorias = categorias;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Filme filme = (Filme) o;
+        return Objects.equals(id, filme.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 
 }

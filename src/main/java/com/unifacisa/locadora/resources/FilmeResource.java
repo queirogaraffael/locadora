@@ -1,13 +1,12 @@
 package com.unifacisa.locadora.resources;
 
+import com.unifacisa.locadora.entities.Categoria;
 import com.unifacisa.locadora.entities.Filme;
 import com.unifacisa.locadora.services.FilmeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,13 +21,14 @@ public class FilmeResource {
     @Autowired
     private FilmeService filmeService;
 
-    @Operation(summary = "Adiciona filme")
+    @Operation(summary = "Adiciona filme com categoria(s)", description = "Categoria precisa já estar persistida")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Filme criado com sucesso"),
-            @ApiResponse(responseCode = "400", description = "Requisição inválida")
+            @ApiResponse(responseCode = "400", description = "Requisição inválida"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping
-    public ResponseEntity<Filme> salvar(@RequestBody Filme filme) {
+    public ResponseEntity<Filme> insertFilme(@RequestBody Filme filme) {
         Filme novoFilme = filmeService.insert(filme);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoFilme);
     }
@@ -37,7 +37,7 @@ public class FilmeResource {
     @Operation(summary = "Busca todos os filmes")
     @ApiResponse(responseCode = "200", description = "Retorna a lista de filmes")
     @GetMapping
-    public ResponseEntity<List<Filme>> listarTodos() {
+    public ResponseEntity<List<Filme>> buscaTodosOsFilmes() {
         List<Filme> filmes = filmeService.findAll();
         return ResponseEntity.ok(filmes);
     }
@@ -46,42 +46,37 @@ public class FilmeResource {
     @Operation(summary = "Busca filme pelo id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Retorna o filme"),
-            @ApiResponse(responseCode = "404", description = "Não existe filme com este ID")
+            @ApiResponse(responseCode = "404", description = "Filme não encontrado")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Filme> obterPorId(@PathVariable Long id) {
-        Optional<Filme> optionalFilme = filmeService.findById(id);
-        if (optionalFilme.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } else {
-            Filme filme = optionalFilme.get();
-            return ResponseEntity.ok().body(filme);
-        }
+    public ResponseEntity<Filme> obterFilmePorId(@PathVariable Long id) {
+        Filme filme = filmeService.findById(id);
+        return ResponseEntity.ok().body(filme);
     }
+
 
     @Operation(summary = "Modifica filme pelo ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Filme atualizado com sucesso."),
-            @ApiResponse(responseCode = "404", description = "Filme com ID não encontrado.")
+            @ApiResponse(responseCode = "404", description = "Filme não encontrado.")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Filme> update(@PathVariable Long id, @RequestBody Filme filmeAtualizado) {
+    public ResponseEntity<Filme> atualizaFilme(@PathVariable Long id, @RequestBody Filme filmeAtualizado) {
         Filme updatedFilme = filmeService.update(id, filmeAtualizado);
-
-        if (updatedFilme == null) {
-            return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok(updatedFilme);
-        }
+        return ResponseEntity.ok(updatedFilme);
     }
 
 
     @Operation(summary = "Deleta filme pelo id")
-    @ApiResponse(responseCode = "204", description = "Filme deletado com sucesso")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Filme deletado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Filme não encontrado.")
+    })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+    public ResponseEntity<Void> deletaFilmePeloId(@PathVariable Long id) {
         filmeService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
 }
 
