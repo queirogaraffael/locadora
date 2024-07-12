@@ -35,7 +35,10 @@ public class FilmeResource {
 
 
     @Operation(summary = "Busca todos os filmes")
-    @ApiResponse(responseCode = "200", description = "Retorna a lista de filmes")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Retorna a lista de filmes"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @GetMapping
     public ResponseEntity<List<Filme>> buscaTodosOsFilmes() {
         List<Filme> filmes = filmeService.findAll();
@@ -46,7 +49,8 @@ public class FilmeResource {
     @Operation(summary = "Busca filme pelo id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Retorna o filme"),
-            @ApiResponse(responseCode = "404", description = "Filme não encontrado")
+            @ApiResponse(responseCode = "404", description = "Filme não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/{id}")
     public ResponseEntity<Filme> obterFilmePorId(@PathVariable Long id) {

@@ -3,8 +3,6 @@ package com.unifacisa.locadora.services;
 import com.unifacisa.locadora.entities.Categoria;
 import com.unifacisa.locadora.entities.Filme;
 import com.unifacisa.locadora.exceptions.ResourceNotFoundException;
-import com.unifacisa.locadora.model.DTOs.CategoriaDTO;
-import com.unifacisa.locadora.model.projections.CategoriaProjection;
 import com.unifacisa.locadora.repositories.CategoriaRepository;
 import com.unifacisa.locadora.repositories.FilmeRepository;
 import jakarta.transaction.Transactional;
@@ -16,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class CategoriaService {
@@ -29,23 +26,17 @@ public class CategoriaService {
 
 
     @Transactional
-    @CachePut(value = "categoriasDTOCache", key = "#result.id")
-    public CategoriaDTO adicionaCategoria(Categoria categoria){
-
-        categoriaRepository.save(categoria);
-
-        return new CategoriaDTO(categoria.getId(), categoria.getNome());
+    @CachePut(value = "categoriasCache", key = "#result.id")
+    public Categoria adicionaCategoria(Categoria categoria){
+        return categoriaRepository.save(categoria);
     }
 
 
     @Transactional
-    @Cacheable(value = "categoriasDTOCache", key = "'all'")
-    public List<CategoriaDTO> retornaTodasAsCategoriasDTO(){
-        List<CategoriaProjection> categoriaProjection = categoriaRepository.findAllProjectedBy();
+    @Cacheable(value = "categoriasCache")
+    public List<Categoria> retornaTodasAsCategorias(){
+        return categoriaRepository.findAll();
 
-        return categoriaProjection.stream()
-                .map(projection -> new CategoriaDTO(projection.getId(), projection.getNome()))
-                .collect(Collectors.toList());
     }
 
 
@@ -57,20 +48,18 @@ public class CategoriaService {
 
 
     @Transactional
-    @CachePut(value = "categoriasDTOCache", key = "#id")
-    public CategoriaDTO update(Long id, Categoria categoriaUpdated) {
+    @CachePut(value = "categoriasCache", key = "#id")
+    public Categoria update(Long id, Categoria categoriaUpdated) {
         Categoria categoria = categoriaRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Categoria não encontrada"));
 
         categoria.setNome(categoriaUpdated.getNome());
 
-        categoriaRepository.save(categoria);
-
-        return new CategoriaDTO(id, categoria.getNome());
+        return categoriaRepository.save(categoria);
     }
 
 
     @Transactional
-    @CacheEvict(value = "categoriasDTOCache", key = "#id")
+    @CacheEvict(value = "categoriasCache", key = "#id")
     public void deletaCategoria(long id){
         Categoria categoria  = categoriaRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada"));
 

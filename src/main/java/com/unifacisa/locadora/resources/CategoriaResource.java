@@ -2,7 +2,6 @@ package com.unifacisa.locadora.resources;
 
 import com.unifacisa.locadora.entities.Categoria;
 import com.unifacisa.locadora.entities.Filme;
-import com.unifacisa.locadora.model.DTOs.CategoriaDTO;
 import com.unifacisa.locadora.services.CategoriaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -29,17 +28,17 @@ public class CategoriaResource {
             @ApiResponse(responseCode = "400", description = "Requisição inválida")
     })
     @PostMapping
-    public ResponseEntity<CategoriaDTO> adicionaCategoria(@RequestBody Categoria categoria){
-        CategoriaDTO categoriaDTOCriada = categoriaService.adicionaCategoria(categoria);
-        return ResponseEntity.status(HttpStatus.CREATED).body(categoriaDTOCriada);
+    public ResponseEntity<Categoria> adicionaCategoria(@RequestBody Categoria categoria){
+        Categoria cat = categoriaService.adicionaCategoria(categoria);
+        return ResponseEntity.status(HttpStatus.CREATED).body(cat);
     }
 
 
     @Operation(summary = "Retorna todas as categorias sem os filmes")
     @ApiResponse(responseCode = "200", description = "Retorna a lista de categorias")
     @GetMapping
-    public ResponseEntity<List<CategoriaDTO>> retornaTodasAsCategoriasDTO(){
-        List<CategoriaDTO> categorias = categoriaService.retornaTodasAsCategoriasDTO();
+    public ResponseEntity<List<Categoria>> retornaTodasAsCategorias(){
+        List<Categoria> categorias = categoriaService.retornaTodasAsCategorias();
         return ResponseEntity.ok(categorias);
     }
 
@@ -62,9 +61,9 @@ public class CategoriaResource {
             @ApiResponse(responseCode = "404", description = "Categoria não encontrada.")
     })
     @PutMapping("{id}")
-    public ResponseEntity<CategoriaDTO> modificaCategoria(@PathVariable Long id, @RequestBody Categoria novaCategoria){
-        CategoriaDTO categoriaDTO = categoriaService.update(id, novaCategoria);
-        return ResponseEntity.ok(categoriaDTO);
+    public ResponseEntity<Categoria> modificaCategoria(@PathVariable Long id, @RequestBody Categoria novaCategoria){
+        Categoria categoria = categoriaService.update(id, novaCategoria);
+        return ResponseEntity.ok(categoria);
     }
 
 

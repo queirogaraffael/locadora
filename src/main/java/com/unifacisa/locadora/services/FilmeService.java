@@ -1,23 +1,20 @@
 package com.unifacisa.locadora.services;
 
-import com.unifacisa.locadora.entities.Categoria;
 import com.unifacisa.locadora.entities.Filme;
 import com.unifacisa.locadora.exceptions.ResourceNotFoundException;
-import com.unifacisa.locadora.model.DTOs.CategoriaDTO;
 import com.unifacisa.locadora.repositories.CategoriaRepository;
 import com.unifacisa.locadora.repositories.FilmeRepository;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class FilmeService {
@@ -45,9 +42,11 @@ public class FilmeService {
 
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "filmeCache", key = "#id")
+    @Cacheable(value = "filmesCache")
     public Filme findById(Long id) {
-        return filmeRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Filme não encontrado"));
+        Filme filme = filmeRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Filme não encontrado"));
+        Hibernate.initialize(filme.getCategorias());
+        return filme;
     }
 
 
@@ -62,7 +61,7 @@ public class FilmeService {
 
         Filme updatedFilme = filmeRepository.save(filme);
 
-        Cache filmeCache = cacheManager.getCache("filmeCache");
+        Cache filmeCache = cacheManager.getCache("filmesCache");
         if (filmeCache != null && filmeCache.get(id) != null) {
             filmeCache.put(id, updatedFilme);
         }
@@ -72,7 +71,7 @@ public class FilmeService {
 
 
     @Transactional
-    @CacheEvict(value = "filmeCache", key = "#id")
+    @CacheEvict(value = "filmesCache", key = "#id")
     public void delete(Long id) {
         filmeRepository.deleteById(id);
     }

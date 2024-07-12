@@ -26,8 +26,8 @@ public class RedisConfig {
         return RedisCacheManager.builder(redisConnectionFactory)
                 .cacheDefaults(redisCacheConfiguration)
                 .withInitialCacheConfigurations(Map.of(
-                        "filmeCache", redisCacheConfiguration,
-                        "categoriasDTOCache", redisCacheConfiguration
+                        "filmesCache", redisCacheConfiguration,
+                        "categoriasCache", redisCacheConfiguration
                 ))
                 .build();
     }
