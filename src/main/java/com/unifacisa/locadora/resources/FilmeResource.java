@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,15 +35,16 @@ public class FilmeResource {
     }
 
 
-    @Operation(summary = "Busca todos os filmes")
+    @Operation(summary = "Busca filmes com suporte a paginação")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Retorna a lista de filmes"),
-        @ApiResponse(responseCode = "500", description = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Retorna a página de filmes com os dados solicitados"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping
-    public ResponseEntity<List<Filme>> buscaTodosOsFilmes() {
-        List<Filme> filmes = filmeService.findAll();
-        return ResponseEntity.ok(filmes);
+    @GetMapping("/filmes")
+    public Page<Filme> getFilmesPaginados(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return filmeService.getFilmesPaginados(page, size);
     }
 
 

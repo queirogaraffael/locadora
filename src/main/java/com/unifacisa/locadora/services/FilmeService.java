@@ -11,6 +11,9 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,8 +39,9 @@ public class FilmeService {
 
 
     @Transactional(readOnly = true)
-    public List<Filme> findAll() {
-        return filmeRepository.findAll();
+    public Page<Filme> getFilmesPaginados(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return filmeRepository.findAll(pageable);
     }
 
 

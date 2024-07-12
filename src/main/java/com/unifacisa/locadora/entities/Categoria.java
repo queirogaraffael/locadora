@@ -2,8 +2,7 @@ package com.unifacisa.locadora.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -14,6 +13,8 @@ import java.util.Set;
 @Table(name = "tb_categorias")
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class Categoria implements Serializable {
 
     @Id

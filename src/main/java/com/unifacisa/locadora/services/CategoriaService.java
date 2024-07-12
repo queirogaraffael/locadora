@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,9 +44,12 @@ public class CategoriaService {
 
 
     @Transactional
-    public Set<Filme> retornaFilmesPorCategoria(Long id){
-        Categoria categoria = categoriaRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Categoria não encontrada"));
-        return categoria.getFilmes();
+    public Page<Filme> retornaFilmesPorCategoriaPaginados(Long id, int page, int size) {
+        Categoria categoria = categoriaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada"));
+
+        Pageable pageable = PageRequest.of(page, size);
+        return filmeRepository.findByCategorias(categoria, pageable);
     }
 
 

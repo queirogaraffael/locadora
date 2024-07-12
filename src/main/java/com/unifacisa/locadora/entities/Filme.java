@@ -1,8 +1,7 @@
 package com.unifacisa.locadora.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -14,6 +13,8 @@ import java.util.Set;
 @Table(name = "tb_filmes")
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class Filme implements Serializable {
 
     @Serial

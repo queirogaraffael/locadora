@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,15 +44,17 @@ public class CategoriaResource {
     }
 
 
-    @Operation(summary = "Busca todos os filmes de uma categoria")
+    @Operation(summary = "Busca filmes por categoria com suporte a paginação")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Retorna todos os filmes da categoria encontrada"),
+            @ApiResponse(responseCode = "200", description = "Retorna todos os filmes da categoria por página"),
             @ApiResponse(responseCode = "404", description = "Categoria não encontrada no sistema")
     })
-    @GetMapping("filmes/{id}")
-    public ResponseEntity<Set<Filme>> retornaFilmesPorCategoria(@PathVariable Long id){
-        Set<Filme> filmes = categoriaService.retornaFilmesPorCategoria(id);
-        return ResponseEntity.ok(filmes);
+    @GetMapping("/filmes/{id}")
+    public Page<Filme> buscaFilmesPorCategoriaPaginados(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return categoriaService.retornaFilmesPorCategoriaPaginados(id, page, size);
     }
 
 
