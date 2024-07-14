@@ -1,6 +1,6 @@
 package com.unifacisa.locadora.repositories;
 
-import com.unifacisa.locadora.entities.Categoria;
+import com.unifacisa.locadora.model.entities.Categoria;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

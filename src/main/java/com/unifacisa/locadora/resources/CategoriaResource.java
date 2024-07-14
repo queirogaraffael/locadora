@@ -1,19 +1,16 @@
 package com.unifacisa.locadora.resources;
 
-import com.unifacisa.locadora.entities.Categoria;
-import com.unifacisa.locadora.entities.Filme;
+import com.unifacisa.locadora.model.entities.Categoria;
 import com.unifacisa.locadora.services.CategoriaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/categorias")
@@ -35,26 +32,12 @@ public class CategoriaResource {
     }
 
 
-    @Operation(summary = "Retorna todas as categorias sem os filmes")
+    @Operation(summary = "Retorna todas as categorias", description = "Não retorna com os filmes e é cacheado")
     @ApiResponse(responseCode = "200", description = "Retorna a lista de categorias")
     @GetMapping
     public ResponseEntity<List<Categoria>> retornaTodasAsCategorias(){
         List<Categoria> categorias = categoriaService.retornaTodasAsCategorias();
         return ResponseEntity.ok(categorias);
-    }
-
-
-    @Operation(summary = "Busca filmes por categoria com suporte a paginação")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Retorna todos os filmes da categoria por página"),
-            @ApiResponse(responseCode = "404", description = "Categoria não encontrada no sistema")
-    })
-    @GetMapping("/filmes/{id}")
-    public Page<Filme> buscaFilmesPorCategoriaPaginados(
-            @PathVariable Long id,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        return categoriaService.retornaFilmesPorCategoriaPaginados(id, page, size);
     }
 
 
@@ -80,5 +63,6 @@ public class CategoriaResource {
         categoriaService.deletaCategoria(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
 
 }

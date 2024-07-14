@@ -1,7 +1,9 @@
 package com.unifacisa.locadora.services;
 
-import com.unifacisa.locadora.entities.Filme;
 import com.unifacisa.locadora.exceptions.ResourceNotFoundException;
+import com.unifacisa.locadora.model.DTOs.FilmeDTO;
+import com.unifacisa.locadora.model.entities.Categoria;
+import com.unifacisa.locadora.model.entities.Filme;
 import com.unifacisa.locadora.repositories.CategoriaRepository;
 import com.unifacisa.locadora.repositories.FilmeRepository;
 import org.hibernate.Hibernate;
@@ -9,15 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class FilmeService {
@@ -39,9 +38,10 @@ public class FilmeService {
 
 
     @Transactional(readOnly = true)
-    public Page<Filme> getFilmesPaginados(int page, int size) {
+    public Page<FilmeDTO> getFilmesDTOPaginados(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return filmeRepository.findAll(pageable);
+
+        return filmeRepository.findAllFilmeDTOs(pageable);
     }
 
 
@@ -59,8 +59,14 @@ public class FilmeService {
         Filme filme = filmeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Filme com este id não encontrado."));
 
-        filme.setNome(filmeUpdated.getNome());
-        filme.setDiretor(filmeUpdated.getDiretor());
+
+        filme.setTitulo(filmeUpdated.getTitulo());
+        filme.setDescricao(filmeUpdated.getDescricao());
+        filme.setDataLancamento(filmeUpdated.getDataLancamento());
+        filme.setDuracao(filmeUpdated.getDuracao());
+        filme.setCapaUrl(filmeUpdated.getCapaUrl());
+        filme.setTrailerUrl(filmeUpdated.getTrailerUrl());
+        filme.setVideoUrl(filmeUpdated.getVideoUrl());
         filme.setCategorias(filmeUpdated.getCategorias());
 
         Filme updatedFilme = filmeRepository.save(filme);
@@ -73,11 +79,20 @@ public class FilmeService {
         return updatedFilme;
     }
 
-
     @Transactional
     @CacheEvict(value = "filmesCache", key = "#id")
     public void delete(Long id) {
         filmeRepository.deleteById(id);
     }
+
+
+    @Transactional
+    public Page<FilmeDTO> retornaFilmesDTOPorCategoriaPaginados(Long id, int page, int size) {
+        Categoria categoria = categoriaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada"));
+        Pageable pageable = PageRequest.of(page, size);
+        return filmeRepository.findFilmeDTOsByCategoria(categoria.getId().toString(), pageable);
+    }
+
 
 }

@@ -1,12 +1,12 @@
-package com.unifacisa.locadora.entities;
+package com.unifacisa.locadora.model.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -24,9 +24,14 @@ public class Filme implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
-
-    private String nome;
-    private String diretor;
+    private String titulo;
+    private String descricao;
+    private LocalDate dataLancamento;
+    private double rating;
+    private String duracao;
+    private String capaUrl;
+    private String trailerUrl;
+    private String videoUrl;
 
 
     @ManyToMany(fetch = FetchType.EAGER)

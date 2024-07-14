@@ -1,4 +1,4 @@
-package com.unifacisa.locadora.entities;
+package com.unifacisa.locadora.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -6,7 +6,6 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -21,8 +20,6 @@ public class Categoria implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
-
-    @EqualsAndHashCode.Include
     private String nome;
 
     @JsonIgnore
