@@ -5,7 +5,7 @@ import com.unifacisa.locadora.model.entities.Categoria;
 import com.unifacisa.locadora.model.entities.Filme;
 import com.unifacisa.locadora.repositories.CategoriaRepository;
 import com.unifacisa.locadora.repositories.FilmeRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -18,20 +18,19 @@ import java.util.List;
 public class CategoriaService {
 
     @Autowired
-    CategoriaRepository categoriaRepository;
+    private CategoriaRepository categoriaRepository;
 
     @Autowired
-    FilmeRepository filmeRepository;
+    private FilmeRepository filmeRepository;
 
 
     @Transactional
-    @CachePut(value = "categoriasCache", key = "#result.id")
     public Categoria adicionaCategoria(Categoria categoria){
         return categoriaRepository.save(categoria);
     }
 
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Cacheable(value = "categoriasCache")
     public List<Categoria> retornaTodasAsCategorias(){
         return categoriaRepository.findAll();

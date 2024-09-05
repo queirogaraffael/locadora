@@ -22,10 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class FilmeService {
 
     @Autowired
-    FilmeRepository filmeRepository;
+    private FilmeRepository filmeRepository;
 
     @Autowired
-    CategoriaRepository categoriaRepository;
+    private CategoriaRepository categoriaRepository;
 
     @Autowired
     private CacheManager cacheManager;
@@ -63,6 +63,7 @@ public class FilmeService {
         filme.setTitulo(filmeUpdated.getTitulo());
         filme.setDescricao(filmeUpdated.getDescricao());
         filme.setDataLancamento(filmeUpdated.getDataLancamento());
+        filme.setRating(filmeUpdated.getRating());
         filme.setDuracao(filmeUpdated.getDuracao());
         filme.setCapaUrl(filmeUpdated.getCapaUrl());
         filme.setTrailerUrl(filmeUpdated.getTrailerUrl());
@@ -86,7 +87,7 @@ public class FilmeService {
     }
 
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<FilmeDTO> retornaFilmesDTOPorCategoriaPaginados(Long id, int page, int size) {
         Categoria categoria = categoriaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada"));

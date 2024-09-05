@@ -17,7 +17,7 @@ import java.util.List;
 public class CategoriaResource {
 
     @Autowired
-    CategoriaService categoriaService;
+    private CategoriaService categoriaService;
 
 
     @Operation(summary = "Adiciona categoria")
