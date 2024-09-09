@@ -44,7 +44,9 @@ public class CategoriaResource {
     @Operation(summary = "Modifica categoria")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Categoria atualizada com sucesso."),
-            @ApiResponse(responseCode = "404", description = "Categoria não encontrada.")
+            @ApiResponse(responseCode = "400", description = "Requisição inválida."),
+            @ApiResponse(responseCode = "404", description = "Categoria não encontrada."),
+            @ApiResponse(responseCode = "500", description = "Erro interno no servidor.")
     })
     @PutMapping("{id}")
     public ResponseEntity<Categoria> modificaCategoria(@PathVariable Long id, @RequestBody Categoria novaCategoria){
@@ -56,7 +58,8 @@ public class CategoriaResource {
     @Operation(summary = "Deleta categoria")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Categoria deletada com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Categoria não encontrada")
+            @ApiResponse(responseCode = "404", description = "Categoria não encontrada"),
+            @ApiResponse(responseCode = "500", description = "Erro interno no servidor.")
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletaCategoriaPorId(@PathVariable Long id){
