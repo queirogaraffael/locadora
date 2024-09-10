@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,7 +29,7 @@ public class Filme implements Serializable {
 
     private String titulo;
     private String descricao;
-    private LocalDate dataLancamento;
+    private String dataLancamento;
     private double rating;
     private String duracao;
     private String capaUrl;

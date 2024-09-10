@@ -31,7 +31,7 @@ export default function () {
     response = http.post('http://localhost:8080/filmes', JSON.stringify({
         titulo: 'titulo',
         descricao: 'descricao',
-        dataLancamento: new Date().toISOString().split('T')[0],
+        dataLancamento: "2011",
         rating: 8.8,
         duracao: '2h',
         capaUrl: 'link capa URL',

@@ -14,15 +14,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.Set;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 
 @SpringBootTest
@@ -55,7 +51,7 @@ class FilmeResourceIntegrationTest {
         Filme filme = new Filme();
         filme.setTitulo("Novo Filme");
         filme.setDescricao("Descrição do Novo Filme");
-        filme.setDataLancamento(LocalDate.now());
+        filme.setDataLancamento("2011");
         filme.setDuracao("120 minutos");
         filme.setCategorias(Set.of(categoria));
 
@@ -78,14 +74,13 @@ class FilmeResourceIntegrationTest {
     }
 
 
-
     @Test
     @DisplayName("Teste para o endpoint GET /filmes/{id}")
     void testObterFilmePorId() throws Exception {
         Filme filme = new Filme();
         filme.setTitulo("Filme Teste");
         filme.setDescricao("Descrição Teste");
-        filme.setDataLancamento(LocalDate.now());
+        filme.setDataLancamento("2011");
         filme.setDuracao("90 minutos");
         filmeRepository.save(filme);
 
@@ -106,7 +101,7 @@ class FilmeResourceIntegrationTest {
         Filme filme = new Filme();
         filme.setTitulo("Filme Atualizar");
         filme.setDescricao("Descrição Atualizar");
-        filme.setDataLancamento(LocalDate.now());
+        filme.setDataLancamento("2011");
         filme.setRating(8.9);
         filme.setDuracao("100 minutos");
         filme.setCapaUrl("url capa");
@@ -122,7 +117,7 @@ class FilmeResourceIntegrationTest {
         Filme filmeAtualizado = new Filme();
         filmeAtualizado.setTitulo("Filme Atualizado");
         filmeAtualizado.setDescricao("Descrição Atualizada");
-        filmeAtualizado.setDataLancamento(LocalDate.now());
+        filmeAtualizado.setDataLancamento("2011");
         filmeAtualizado.setRating(9.0);
         filmeAtualizado.setDuracao("105 minutos");
         filmeAtualizado.setCapaUrl("url capa atualizado");
@@ -144,7 +139,7 @@ class FilmeResourceIntegrationTest {
         Filme filme = new Filme();
         filme.setTitulo("Filme Deletar");
         filme.setDescricao("Descrição Deletar");
-        filme.setDataLancamento(LocalDate.now());
+        filme.setDataLancamento("2011");
         filme.setDuracao("110 minutos");
         filmeRepository.save(filme);
 
@@ -163,7 +158,7 @@ class FilmeResourceIntegrationTest {
         Filme filme = new Filme();
         filme.setTitulo("Filme Categoria");
         filme.setDescricao("Descrição Categoria");
-        filme.setDataLancamento(LocalDate.now());
+        filme.setDataLancamento("2011");
         filme.setDuracao("130 minutos");
         filme.setCategorias(Set.of(categoria));
         filmeRepository.save(filme);

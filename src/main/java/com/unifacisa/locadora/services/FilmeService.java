@@ -8,9 +8,8 @@ import com.unifacisa.locadora.repositories.CategoriaRepository;
 import com.unifacisa.locadora.repositories.FilmeRepository;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,9 +25,6 @@ public class FilmeService {
 
     @Autowired
     private CategoriaRepository categoriaRepository;
-
-    @Autowired
-    private CacheManager cacheManager;
 
 
     @Transactional
@@ -48,13 +44,14 @@ public class FilmeService {
     @Transactional(readOnly = true)
     @Cacheable(value = "filmesCache")
     public Filme findById(Long id) {
-        Filme filme = filmeRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Filme não encontrado"));
+        Filme filme = filmeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Filme não encontrado"));
         Hibernate.initialize(filme.getCategorias());
         return filme;
     }
 
 
     @Transactional
+    @CachePut(value = "filmesCache", key = "#id")
     public Filme update(Long id, Filme filmeUpdated) {
         Filme filme = filmeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Filme com este id não encontrado."));
@@ -70,14 +67,7 @@ public class FilmeService {
         filme.setVideoUrl(filmeUpdated.getVideoUrl());
         filme.setCategorias(filmeUpdated.getCategorias());
 
-        Filme updatedFilme = filmeRepository.save(filme);
-
-        Cache filmeCache = cacheManager.getCache("filmesCache");
-        if (filmeCache != null && filmeCache.get(id) != null) {
-            filmeCache.put(id, updatedFilme);
-        }
-
-        return updatedFilme;
+        return filmeRepository.save(filme);
     }
 
     @Transactional
