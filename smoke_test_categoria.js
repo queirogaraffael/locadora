@@ -7,9 +7,6 @@ export let options = {
 
 };
 
-// A aplicação precisa ter acabado de começar a rodar.
-let count = 1;
-
 
 export default function () {
 
@@ -23,6 +20,8 @@ export default function () {
         'status is 201': (r) => r.status === 201,
 
     })
+
+    let categoriaId = response.json().id;
 
     sleep(1);
 
@@ -38,7 +37,7 @@ export default function () {
 
 
     // Modifica categoria
-    response = http.put(`http://localhost:8080/categorias/${count}`, JSON.stringify({
+    response = http.put(`http://localhost:8080/categorias/${categoriaId}`, JSON.stringify({
         nome: 'Categoria Modificada'
     }), { headers: { 'Content-Type': 'application/json' } });
 
@@ -51,7 +50,7 @@ export default function () {
 
 
     // Deleta categoria
-    response = http.del(`http://localhost:8080/categorias/${count}`);
+    response = http.del(`http://localhost:8080/categorias/${categoriaId}`);
 
     check(response, {
         'status is 204': (r) => r.status === 204,
@@ -59,8 +58,6 @@ export default function () {
     });
 
     sleep(1)
-
-    count++
 
 }
 

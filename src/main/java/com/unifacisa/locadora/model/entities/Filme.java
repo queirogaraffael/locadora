@@ -27,6 +27,7 @@ public class Filme implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
+
     private String titulo;
     private String descricao;
     private LocalDate dataLancamento;

@@ -70,18 +70,6 @@ public class FilmeResource {
     }
 
 
-    @Operation(summary = "Deleta filme")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Filme deletado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Filme não encontrado.")
-    })
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletaFilmePeloId(@PathVariable Long id) {
-        filmeService.delete(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-
     @Operation(summary = "Busca filmes DTO por categoria com suporte a paginação")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Retorna todos os filmes da categoria por página"),
@@ -93,6 +81,18 @@ public class FilmeResource {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         return filmeService.retornaFilmesDTOPorCategoriaPaginados(id, page, size);
+    }
+
+
+    @Operation(summary = "Deleta filme")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Filme deletado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Filme não encontrado.")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletaFilmePeloId(@PathVariable Long id) {
+        filmeService.delete(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }
