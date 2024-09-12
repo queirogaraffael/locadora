@@ -43,7 +43,6 @@ class FilmeResourceIntegrationTest {
     @Test
     @DisplayName("Teste para o endpoint POST /filmes")
     void testInsertFilme() throws Exception {
-        // Cria uma categoria existente para o filme
         Categoria categoria = new Categoria();
         categoria.setNome("Ação");
         categoriaRepository.save(categoria);
@@ -87,6 +86,17 @@ class FilmeResourceIntegrationTest {
         mockMvc.perform(get("/filmes/" + filme.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.titulo").value("Filme Teste"));
+    }
+
+
+    @Test
+    @DisplayName("Teste para o endpoint GET /filmes/categorias/{idFilme}")
+    void testObterCategoriasDeFilme() throws Exception{
+
+        mockMvc.perform(get("/filmes/categorias/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].nome").value("Ação"));
+
     }
 
 

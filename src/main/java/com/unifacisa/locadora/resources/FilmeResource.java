@@ -1,6 +1,8 @@
 package com.unifacisa.locadora.resources;
 
-import com.unifacisa.locadora.model.DTOs.FilmeDTO;
+import com.unifacisa.locadora.model.dtos.FilmeIdTituloCapaDTO;
+import com.unifacisa.locadora.model.dtos.FilmeDTO;
+import com.unifacisa.locadora.model.entities.Categoria;
 import com.unifacisa.locadora.model.entities.Filme;
 import com.unifacisa.locadora.services.FilmeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -8,9 +10,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/filmes")
@@ -32,29 +37,42 @@ public class FilmeResource {
     }
 
 
-    @Operation(summary = "Busca filmes DTO com suporte a paginação")
+    @Operation(summary = "Busca filmes com id, capa e url da capa DTO com suporte a paginação")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Retorna a página de filmes com os dados solicitados"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping()
-    public Page<FilmeDTO> getFilmesPaginados(
+    public Page<FilmeIdTituloCapaDTO> getFilmesTituloCapaDTOPaginados(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        return filmeService.getFilmesDTOPaginados(page, size);
+        return filmeService.getFilmeTituloCapaDTOPaginados(page, size);
     }
 
 
-    @Operation(summary = "Busca filme pelo id")
+    @Operation(summary = "Busca filme pelo id", description = "Retorna todos os dados do filme exceto categorias.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Retorna o filme"),
             @ApiResponse(responseCode = "404", description = "Filme não encontrado"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Filme> obterFilmePorId(@PathVariable Long id) {
-        Filme filme = filmeService.findById(id);
+    public ResponseEntity<FilmeDTO> obterFilmePorId(@PathVariable Long id) {
+        FilmeDTO filme = filmeService.findById(id);
         return ResponseEntity.ok().body(filme);
+    }
+
+
+    @Operation(summary = "Busca categorias de um filme.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Retorna categoria(s) com sucesso."),
+            @ApiResponse(responseCode = "404", description = "Categorias não encontrada."),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("categorias/{idFilme}")
+    public ResponseEntity<List<Categoria>> obterCategoriasDeFilme(@PathVariable Long idFilme){
+        List<Categoria> categorias = filmeService.getCategoriasDeUmFilme(idFilme);
+        return ResponseEntity.ok().body(categorias);
     }
 
 
@@ -70,17 +88,17 @@ public class FilmeResource {
     }
 
 
-    @Operation(summary = "Busca filmes DTO por categoria com suporte a paginação")
+    @Operation(summary = "Busca filmes com capa e url da capa DTO por categoria com suporte a paginação")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Retorna todos os filmes da categoria por página"),
             @ApiResponse(responseCode = "404", description = "Categoria não encontrada no sistema")
     })
     @GetMapping("/categoria/{id}")
-    public Page<FilmeDTO> buscaFilmesDTOPorCategoriaPaginados(
+    public Page<FilmeIdTituloCapaDTO> buscaFilmesTituloCapaDTOPorCategoriaPaginados(
             @PathVariable Long id,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        return filmeService.retornaFilmesDTOPorCategoriaPaginados(id, page, size);
+        return filmeService.retornaFilmesTituloCapaDTOPorCategoriaPaginados(id, page, size);
     }
 
 

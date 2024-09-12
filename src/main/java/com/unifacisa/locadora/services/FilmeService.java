@@ -1,12 +1,12 @@
 package com.unifacisa.locadora.services;
 
 import com.unifacisa.locadora.exceptions.ResourceNotFoundException;
-import com.unifacisa.locadora.model.DTOs.FilmeDTO;
+import com.unifacisa.locadora.model.dtos.FilmeIdTituloCapaDTO;
+import com.unifacisa.locadora.model.dtos.FilmeDTO;
 import com.unifacisa.locadora.model.entities.Categoria;
 import com.unifacisa.locadora.model.entities.Filme;
 import com.unifacisa.locadora.repositories.CategoriaRepository;
 import com.unifacisa.locadora.repositories.FilmeRepository;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -16,6 +16,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FilmeService {
@@ -34,19 +37,23 @@ public class FilmeService {
 
 
     @Transactional(readOnly = true)
-    public Page<FilmeDTO> getFilmesDTOPaginados(int page, int size) {
+    public Page<FilmeIdTituloCapaDTO> getFilmeTituloCapaDTOPaginados(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-
-        return filmeRepository.findAllFilmeDTOs(pageable);
+        return filmeRepository.findAllFilmeTituloCapaDTOs(pageable);
     }
 
 
-    @Transactional(readOnly = true)
     @Cacheable(value = "filmesCache")
-    public Filme findById(Long id) {
-        Filme filme = filmeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Filme não encontrado"));
-        Hibernate.initialize(filme.getCategorias());
-        return filme;
+    @Transactional
+    public FilmeDTO findById(Long id) {
+        Optional<FilmeDTO> filme = filmeRepository.findFilmeDTOById(id);
+        return filme.orElse(null);
+    }
+
+
+    @Transactional
+    public List<Categoria> getCategoriasDeUmFilme(Long idFilme){
+        return filmeRepository.findCategoriasByFilmeId(idFilme);
     }
 
 
@@ -70,19 +77,22 @@ public class FilmeService {
         return filmeRepository.save(filme);
     }
 
+
     @Transactional
-    @CacheEvict(value = "filmesCache", key = "#id")
+    @CacheEvict(value = "filmeCache", key = "#id")
     public void delete(Long id) {
         filmeRepository.deleteById(id);
     }
 
 
     @Transactional(readOnly = true)
-    public Page<FilmeDTO> retornaFilmesDTOPorCategoriaPaginados(Long id, int page, int size) {
+    public Page<FilmeIdTituloCapaDTO> retornaFilmesTituloCapaDTOPorCategoriaPaginados(Long id, int page, int size) {
         Categoria categoria = categoriaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada"));
         Pageable pageable = PageRequest.of(page, size);
-        return filmeRepository.findFilmeDTOsByCategoria(categoria.getId().toString(), pageable);
+
+
+        return filmeRepository.findFilmeTituloCapaDTOsByCategoria(categoria.getId(), pageable);
     }
 
 

@@ -44,7 +44,6 @@ class CategoriaResourceIntegrationTest {
 
     @Test
     void testRetornaTodasAsCategorias_Success() throws Exception {
-        // Setup inicial no banco
         categoriaRepository.save(new Categoria(null,"Categoria 1"));
         categoriaRepository.save(new Categoria(null,"Categoria 2"));
 
@@ -56,7 +55,6 @@ class CategoriaResourceIntegrationTest {
 
     @Test
     void testModificaCategoria_Success() throws Exception {
-        // Setup inicial no banco
         Categoria categoria = categoriaRepository.save(new Categoria(null,"Categoria Antiga"));
 
         Categoria novaCategoria = new Categoria();
