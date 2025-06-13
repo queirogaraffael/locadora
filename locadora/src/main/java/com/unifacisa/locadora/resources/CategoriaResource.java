@@ -1,11 +1,14 @@
 package com.unifacisa.locadora.resources;
 
-import com.unifacisa.locadora.model.entities.Categoria;
+import com.unifacisa.locadora.dtos.categoria.CategoriaRequestDTO;
+import com.unifacisa.locadora.dtos.categoria.CategoriaResponseDTO;
+import com.unifacisa.locadora.dtos.categoria.CategoriaUpdateDTO;
 import com.unifacisa.locadora.services.CategoriaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,18 +29,16 @@ public class CategoriaResource {
             @ApiResponse(responseCode = "400", description = "Requisição inválida")
     })
     @PostMapping
-    public ResponseEntity<Categoria> adicionaCategoria(@RequestBody Categoria categoria){
-        Categoria cat = categoriaService.adicionaCategoria(categoria);
-        return ResponseEntity.status(HttpStatus.CREATED).body(cat);
+    public ResponseEntity<CategoriaResponseDTO> adicionaCategoria(@RequestBody CategoriaRequestDTO dto){
+        return ResponseEntity.status(HttpStatus.CREATED).body(categoriaService.adicionaCategoria(dto));
     }
 
 
-    @Operation(summary = "Retorna todas as categorias", description = "Não retorna com os filmes e é cacheado")
+    @Operation(summary = "Retorna todas as categorias paginada")
     @ApiResponse(responseCode = "200", description = "Retorna a lista de categorias")
     @GetMapping
-    public ResponseEntity<List<Categoria>> retornaTodasAsCategorias(){
-        List<Categoria> categorias = categoriaService.retornaTodasAsCategorias();
-        return ResponseEntity.ok(categorias);
+    public ResponseEntity<Page<CategoriaResponseDTO>> retornaTodasAsCategorias(){
+        return ResponseEntity.ok(categoriaService.retornaTodasAsCategoriasPaginadas());
     }
 
 
@@ -49,22 +50,8 @@ public class CategoriaResource {
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor.")
     })
     @PutMapping("{id}")
-    public ResponseEntity<Categoria> modificaCategoria(@PathVariable Long id, @RequestBody Categoria novaCategoria){
-        Categoria categoria = categoriaService.update(id, novaCategoria);
-        return ResponseEntity.ok(categoria);
-    }
-
-
-    @Operation(summary = "Deleta categoria")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Categoria deletada com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Categoria não encontrada"),
-            @ApiResponse(responseCode = "500", description = "Erro interno no servidor.")
-    })
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletaCategoriaPorId(@PathVariable Long id){
-        categoriaService.deletaCategoria(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    public ResponseEntity<CategoriaResponseDTO> modificaCategoria(@PathVariable Long id, @RequestBody CategoriaUpdateDTO dto){
+        return ResponseEntity.ok(categoriaService.update(id, dto));
     }
 
 

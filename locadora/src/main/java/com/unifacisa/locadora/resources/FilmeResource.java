@@ -1,7 +1,10 @@
 package com.unifacisa.locadora.resources;
 
-import com.unifacisa.locadora.model.dtos.FilmeIdTituloCapaDTO;
-import com.unifacisa.locadora.model.dtos.FilmeDTO;
+import com.unifacisa.locadora.dtos.categoria.CategoriaResponseDTO;
+import com.unifacisa.locadora.dtos.filme.FilmePreviewDTO;
+import com.unifacisa.locadora.dtos.filme.FilmeRequestDTO;
+import com.unifacisa.locadora.dtos.filme.FilmeResponseDTO;
+import com.unifacisa.locadora.dtos.filme.FilmeUpdateDTO;
 import com.unifacisa.locadora.model.entities.Categoria;
 import com.unifacisa.locadora.model.entities.Filme;
 import com.unifacisa.locadora.services.FilmeService;
@@ -10,7 +13,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,11 +33,9 @@ public class FilmeResource {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping
-    public ResponseEntity<Filme> insertFilme(@RequestBody Filme filme) {
-        Filme novoFilme = filmeService.insert(filme);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoFilme);
+    public ResponseEntity<FilmeResponseDTO> insertFilme(@RequestBody FilmeRequestDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(filmeService.insert(dto));
     }
-
 
     @Operation(summary = "Busca filmes com id, capa e url da capa DTO com suporte a paginação")
     @ApiResponses(value = {
@@ -43,7 +43,7 @@ public class FilmeResource {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping()
-    public Page<FilmeIdTituloCapaDTO> getFilmesTituloCapaDTOPaginados(
+    public Page<FilmePreviewDTO> getFilmesTituloCapaDTOPaginados(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         return filmeService.getFilmeTituloCapaDTOPaginados(page, size);
@@ -57,9 +57,8 @@ public class FilmeResource {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<FilmeDTO> obterFilmePorId(@PathVariable Long id) {
-        FilmeDTO filme = filmeService.findById(id);
-        return ResponseEntity.ok().body(filme);
+    public ResponseEntity<FilmeResponseDTO> obterFilmePorId(@PathVariable Long id) {
+        return ResponseEntity.ok().body(filmeService.findById(id));
     }
 
 
@@ -70,9 +69,8 @@ public class FilmeResource {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("categorias/{idFilme}")
-    public ResponseEntity<List<Categoria>> obterCategoriasDeFilme(@PathVariable Long idFilme){
-        List<Categoria> categorias = filmeService.getCategoriasDeUmFilme(idFilme);
-        return ResponseEntity.ok().body(categorias);
+    public ResponseEntity<List<CategoriaResponseDTO>> obterCategoriasDeFilme(@PathVariable Long idFilme){
+        return ResponseEntity.ok().body(filmeService.getCategoriasDeUmFilme(idFilme));
     }
 
 
@@ -82,9 +80,8 @@ public class FilmeResource {
             @ApiResponse(responseCode = "404", description = "Filme não encontrado.")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Filme> atualizaFilme(@PathVariable Long id, @RequestBody Filme filmeAtualizado) {
-        Filme updatedFilme = filmeService.update(id, filmeAtualizado);
-        return ResponseEntity.ok(updatedFilme);
+    public ResponseEntity<FilmeResponseDTO> atualizaFilme(@PathVariable Long id, @RequestBody FilmeUpdateDTO dto) {
+        return ResponseEntity.ok(filmeService.update(id, dto));
     }
 
 
@@ -94,7 +91,7 @@ public class FilmeResource {
             @ApiResponse(responseCode = "404", description = "Categoria não encontrada no sistema")
     })
     @GetMapping("/categoria/{id}")
-    public Page<FilmeIdTituloCapaDTO> buscaFilmesTituloCapaDTOPorCategoriaPaginados(
+    public Page<FilmePreviewDTO> buscaFilmesTituloCapaDTOPorCategoriaPaginados(
             @PathVariable Long id,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {

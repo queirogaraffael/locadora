@@ -1,8 +1,8 @@
 package com.unifacisa.locadora.services;
 
+import com.unifacisa.locadora.dtos.filme.FilmeResponseDTO;
 import com.unifacisa.locadora.exceptions.ResourceNotFoundException;
-import com.unifacisa.locadora.model.dtos.FilmeIdTituloCapaDTO;
-import com.unifacisa.locadora.model.dtos.FilmeDTO;
+import com.unifacisa.locadora.dtos.filme.FilmePreviewDTO;
 import com.unifacisa.locadora.model.entities.Categoria;
 import com.unifacisa.locadora.model.entities.Filme;
 import com.unifacisa.locadora.repositories.CategoriaRepository;
@@ -37,7 +37,7 @@ public class FilmeService {
 
 
     @Transactional(readOnly = true)
-    public Page<FilmeIdTituloCapaDTO> getFilmeTituloCapaDTOPaginados(int page, int size) {
+    public Page<FilmePreviewDTO> getFilmeTituloCapaDTOPaginados(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return filmeRepository.findAllFilmeTituloCapaDTOs(pageable);
     }
@@ -45,9 +45,10 @@ public class FilmeService {
 
     @Cacheable(value = "filmesCache")
     @Transactional
-    public FilmeDTO findById(Long id) {
-        Optional<FilmeDTO> filme = filmeRepository.findFilmeDTOById(id);
-        return filme.orElse(null);
+    public FilmeResponseDTO findById(Long id) {
+        Optional<FilmeResponseDTO> filme = filmeRepository.findFilmeDTOById(id).orElseThrow(()-> new ResourceNotFoundException("Filme com ID não encontrado"));
+
+        return filme.get();
     }
 
 
@@ -86,7 +87,7 @@ public class FilmeService {
 
 
     @Transactional(readOnly = true)
-    public Page<FilmeIdTituloCapaDTO> retornaFilmesTituloCapaDTOPorCategoriaPaginados(Long id, int page, int size) {
+    public Page<FilmePreviewDTO> retornaFilmesTituloCapaDTOPorCategoriaPaginados(Long id, int page, int size) {
         Categoria categoria = categoriaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada"));
         Pageable pageable = PageRequest.of(page, size);

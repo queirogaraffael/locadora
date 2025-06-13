@@ -6,8 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.io.Serial;
-import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,10 +16,7 @@ import java.util.Set;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Filme implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
+public class Filme {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,13 +25,8 @@ public class Filme implements Serializable {
 
     private String titulo;
     private String descricao;
-    private String dataLancamento;
-    private double rating;
-    private String duracao;
+    private LocalDate dataLancamento;
     private String capaUrl;
-    private String trailerUrl;
-    private String videoUrl;
-
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "FILME_CATEGORIA", joinColumns = @JoinColumn(name = "filme_id"),

@@ -1,10 +1,15 @@
 package com.unifacisa.locadora.services;
 
+import com.unifacisa.locadora.dtos.categoria.CategoriaRequestDTO;
+import com.unifacisa.locadora.dtos.categoria.CategoriaResponseDTO;
+import com.unifacisa.locadora.dtos.categoria.CategoriaUpdateDTO;
 import com.unifacisa.locadora.exceptions.ResourceNotFoundException;
 import com.unifacisa.locadora.model.entities.Categoria;
 import com.unifacisa.locadora.model.entities.Filme;
 import com.unifacisa.locadora.repositories.CategoriaRepository;
 import com.unifacisa.locadora.repositories.FilmeRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -25,41 +30,33 @@ public class CategoriaService {
 
 
     @Transactional
-    public Categoria adicionaCategoria(Categoria categoria){
-        return categoriaRepository.save(categoria);
+    public CategoriaResponseDTO adicionaCategoria(CategoriaRequestDTO dto){
+
+        Categoria categoria = new Categoria();
+        categoria.setNome(dto.nome());
+
+        Categoria categoriaSaved = categoriaRepository.save(categoria);
+
+        return new CategoriaResponseDTO(categoria.getId(), categoriaSaved.getNome());
     }
 
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "categoriasCache")
-    public List<Categoria> retornaTodasAsCategorias(){
-        return categoriaRepository.findAll();
+    public Page<CategoriaResponseDTO> retornaTodasAsCategoriasPaginadas(Pageable pageable){
+        return categoriaRepository.retornaCategoriasPaginada(pageable);
 
     }
 
 
     @Transactional
-    @CachePut(value = "categoriasCache", key = "#id")
-    public Categoria update(Long id, Categoria categoriaUpdated) {
+    public CategoriaResponseDTO update(Long id, CategoriaUpdateDTO dto) {
         Categoria categoria = categoriaRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Categoria não encontrada"));
 
-        categoria.setNome(categoriaUpdated.getNome());
+        categoria.setNome(dto.nome());
 
-        return categoriaRepository.save(categoria);
-    }
+        Categoria categoriaSaved = categoriaRepository.save(categoria);
 
-
-    @Transactional
-    @CacheEvict(value = "categoriasCache", key = "#id")
-    public void deletaCategoria(long id){
-        Categoria categoria  = categoriaRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada"));
-
-        for(Filme filme : categoria.getFilmes()){
-            filme.getCategorias().remove(categoria);
-            filmeRepository.save(filme);
-        }
-
-        categoriaRepository.delete(categoria);
+        return new CategoriaResponseDTO(categoria.getId(), categoriaSaved.getNome());
     }
 
 }
