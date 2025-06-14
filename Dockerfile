@@ -1,8 +1,23 @@
-FROM eclipse-temurin:17-jdk
+FROM maven:3.9.9-eclipse-temurin-17 AS build
 
 WORKDIR /app
 
-COPY target/locadora-0.0.1-SNAPSHOT.jar /app/locadora.jar
+COPY locadora /app/locadora
+
+WORKDIR /app/locadora
+
+RUN mvn clean package -DskipTests 
+
+FROM eclipse-temurin:17-jre-alpine AS runtime
+
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+WORKDIR /app
+COPY --from=build /app/locadora/target/locadora-0.0.1-SNAPSHOT.jar /app/locadora.jar
+
+RUN chown appuser:appgroup /app/locadora.jar
+
+USER appuser
 
 EXPOSE 8080
 

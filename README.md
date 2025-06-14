@@ -1,84 +1,92 @@
-# Locadora API
-O projeto locadora é uma API para gerenciamento de filmes em uma locadora. Desenvolvida em Java 17 com Spring Boot, a API utiliza Redis para caching e oferece várias funcionalidades para manipulação de dados sobre filmes.
-Arquitetura do Projeto
+# 🎬 Locadora API
 
-## O projeto segue uma arquitetura em camadas, composta por:
-1. Entidades: Representam os dados armazenados no banco de dados. Exemplo: Filme.
-2. Repositórios: Interfaces que interagem com o banco de dados utilizando Spring Data JPA. Exemplo: FilmeRepository.
-3. Serviços: Contêm a lógica de negócios. Exemplo: FilmeService.
-4. Recursos: Endpoints da API para manipulação de recursos. Exemplo: FilmeResource.
+A **Locadora API** é uma aplicação desenvolvida em **Java 17** com **Spring Boot**, projetada para gerenciar filmes e categorias de forma eficiente e escalável. A API utiliza **PostgreSQL** como banco de dados, cache com **Redis** e possui suporte a **paginação**, documentação interativa com **Swagger**, e testes de performance com **K6**. O projeto também está containerizado com **Docker** e **Docker Compose**, o que facilita a execução e implantação.
 
-## Ferramentas Utilizadas
-* Java 17: Linguagem de programação utilizada.
-* Spring Boot: Framework para simplificar a configuração e o desenvolvimento de aplicações Java.
-* Spring Data JPA: Abstração para interações com o banco de dados.
-* Spring Web: Módulo para desenvolvimento de aplicações web.
-* H2 Database: Banco de dados em memória para testes e desenvolvimento.
-* Springdoc OpenAPI: Documentação interativa da API.
-* Redis: Sistema de cache utilizado para otimizar o desempenho.
-* Maven: Gerenciamento de dependências e construção do projeto.
+---
 
-## Configuração do Projeto
-### Banco de Dados H2
-A configuração do banco de dados H2 é feita no arquivo application.properties:
+## 📚 Visão Geral
 
-application.properties:
+O projeto adota uma **arquitetura em camadas**, separando responsabilidades para garantir manutenibilidade e escalabilidade:
 
-```
-spring.datasource.url=jdbc:h2:mem:testdb
-spring.datasource.username=sa
-spring.datasource.password=
-spring.h2.console.enabled=true
-spring.h2.console.path=/h2-console
-spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.H2Dialect
-spring.jpa.properties.hibernate.ddl-auto=create-drop
-```
+- Entidades representam as tabelas do banco de dados.
+- DTOs são utilizados para transferir dados entre as camadas sem expor diretamente as entidades.
+- Repositórios fazem a interface com o banco utilizando Spring Data JPA.
+- Serviços contêm a lógica de negócio da aplicação.
+- Controllers expõem os endpoints REST para o consumo da API.
 
-### Configurações de Cache com Redis
-Para habilitar o caching com Redis:
+---
 
-application.properties:
+## 🧩 Funcionalidades Principais
 
-```
-spring.cache.type=redis
-spring.redis.host=localhost
-spring.redis.port=6379
-```
+- CRUD completo para filmes e categorias.
+- Paginação na listagem de filmes e categorias.
+- Associação de múltiplas categorias a um filme.
+- Validação de dados e tratamento robusto de erros.
+- Documentação automática e interativa com Swagger.
+- Cache implementado com Redis para maior desempenho.
+- Containerização com Docker e orquestração via Docker Compose.
+- Testes de performance utilizando a ferramenta K6.
 
-### Docker (Opcional)
-Para facilitar o uso do Redis, você pode utilizar o Docker no windows:
+---
 
-```
-docker run --name my-redis -p 6379:6379 -d redis
-docker exec -it my-redis sh
-redis-cli
-127.0.0.1:6379> keys *
-```
+## ⚙️ Tecnologias Utilizadas
 
-## Como Executar
-Para executar a aplicação:
-1. Clone o repositório para o seu ambiente local.
-2. Navegue até o diretório do projeto.
-3. Execute a classe LocadoraApplication.
-4. Acesse a aplicação através do seu navegador web.
+- Java 17
+- Spring Boot (Spring Web, Spring Data JPA, Spring Validation, Spring Cache)
+- PostgreSQL
+- Redis
+- Lombok
+- Swagger/OpenAPI
+- Docker e Docker Compose
+- K6 (para testes de carga e desempenho)
 
-## Endpoints da API
-A API possui os seguintes endpoints:
-* Adicionar Filme
-    POST /filmes
-    Adiciona um novo filme.
-* Listar Todos os Filmes
-    GET /filmes
-    Retorna a lista de todos os filmes.
-* Obter Filme por ID
-    GET /filmes/{id}
-    Retorna um filme específico pelo ID.
-* Atualizar Filme
-    PUT /filmes/{id}
-    Atualiza um filme pelo ID.
-* Deletar Filme
-    DELETE /filmes/{id}
-    Deleta um filme pelo ID.
+---
 
-## Documentação da API
-A documentação da API é gerada automaticamente pelo Springdoc OpenAPI e pode ser acessada através do endpoint /swagger-ui.html.
+## 📦 Estrutura do Projeto
+
+A estrutura do projeto é organizada em pastas que representam claramente cada camada: controllers, serviços, entidades, DTOs, repositórios e configurações. Também estão incluídos os arquivos para Docker e configuração da aplicação.
+
+---
+
+## 🔧 Configurações
+
+O banco de dados utilizado é o **PostgreSQL**, com as configurações de acesso definidas no arquivo de propriedades. O Redis é configurado como provedor de cache.
+
+---
+
+## 🐳 Docker
+
+O projeto possui um Dockerfile que gera a imagem da aplicação, e um arquivo `docker-compose.yml` que orquestra a aplicação, o banco de dados PostgreSQL e o Redis.
+
+---
+
+## 🧪 Testes de Performance
+
+O sistema foi testado com a ferramenta **K6**, utilizando scripts para simular diferentes cenários de uso, incluindo testes de carga e smoke tests para endpoints de filmes e categorias.
+
+---
+
+## 📘 Documentação Swagger
+
+A documentação da API está disponível via Swagger, permitindo visualizar e testar os endpoints de forma simples e interativa através do navegador.
+
+---
+
+## 🛠 Exemplos de Endpoints com Paginação
+
+A API suporta paginação nas requisições de filmes e categorias, com parâmetros para definir o número da página e a quantidade de itens por página. Por exemplo:
+
+- Listar filmes com título e capa paginados
+- Listar filmes por categoria com suporte à paginação
+- Listar categorias com suporte à paginação
+
+---
+
+## 🚀 Como Executar Localmente
+
+Para executar o projeto localmente:
+
+1. Clone o repositório.
+2. Gere o build com Maven.
+3. Suba os serviços com Docker Compose (`docker-compose up`).
+4. A aplicação estará disponível localmente para testes e uso.
