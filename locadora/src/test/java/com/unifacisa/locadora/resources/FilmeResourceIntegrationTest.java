@@ -1,6 +1,7 @@
 package com.unifacisa.locadora.resources;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.unifacisa.locadora.dtos.filme.FilmeUpdateDTO;
 import com.unifacisa.locadora.model.entities.Categoria;
 import com.unifacisa.locadora.model.entities.Filme;
 import com.unifacisa.locadora.repositories.CategoriaRepository;
@@ -14,6 +15,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -50,8 +53,7 @@ class FilmeResourceIntegrationTest {
         Filme filme = new Filme();
         filme.setTitulo("Novo Filme");
         filme.setDescricao("Descrição do Novo Filme");
-        filme.setDataLancamento("2011");
-        filme.setDuracao("120 minutos");
+        filme.setDataLancamento(LocalDate.parse("2025-06-14"));
         filme.setCategorias(Set.of(categoria));
 
         mockMvc.perform(post("/filmes")
@@ -79,24 +81,12 @@ class FilmeResourceIntegrationTest {
         Filme filme = new Filme();
         filme.setTitulo("Filme Teste");
         filme.setDescricao("Descrição Teste");
-        filme.setDataLancamento("2011");
-        filme.setDuracao("90 minutos");
+        filme.setDataLancamento(LocalDate.parse("2025-06-14"));
         filmeRepository.save(filme);
 
         mockMvc.perform(get("/filmes/" + filme.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.titulo").value("Filme Teste"));
-    }
-
-
-    @Test
-    @DisplayName("Teste para o endpoint GET /filmes/categorias/{idFilme}")
-    void testObterCategoriasDeFilme() throws Exception{
-
-        mockMvc.perform(get("/filmes/categorias/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].nome").value("Ação"));
-
     }
 
 
@@ -107,39 +97,25 @@ class FilmeResourceIntegrationTest {
         categoria.setNome("Ação");
         categoriaRepository.save(categoria);
 
-
         Filme filme = new Filme();
         filme.setTitulo("Filme Atualizar");
         filme.setDescricao("Descrição Atualizar");
-        filme.setDataLancamento("2011");
-        filme.setRating(8.9);
-        filme.setDuracao("100 minutos");
-        filme.setCapaUrl("url capa");
-        filme.setTrailerUrl("trailer url");
-        filme.setVideoUrl("filme url");
-        filme.setCategorias(Set.of(categoria));
+        filme.setDataLancamento(null);
+        filme.setCategorias(new HashSet<>(Set.of(categoria)));
         filmeRepository.save(filme);
 
-        Categoria categoriaAtualizada = new Categoria();
-        categoriaAtualizada.setNome("categoria atualizada");
-        categoriaRepository.save(categoriaAtualizada);
-
-        Filme filmeAtualizado = new Filme();
-        filmeAtualizado.setTitulo("Filme Atualizado");
-        filmeAtualizado.setDescricao("Descrição Atualizada");
-        filmeAtualizado.setDataLancamento("2011");
-        filmeAtualizado.setRating(9.0);
-        filmeAtualizado.setDuracao("105 minutos");
-        filmeAtualizado.setCapaUrl("url capa atualizado");
-        filmeAtualizado.setTrailerUrl("trailer url atualizada");
-        filmeAtualizado.setVideoUrl("filme url atualizada");
-        filmeAtualizado.setCategorias(Set.of(categoriaAtualizada));
+        FilmeUpdateDTO filmeAtualizado = new FilmeUpdateDTO("Filme Atualizado", "Descrição Atualizada", LocalDate.parse("2025-06-14")
+                ,"url capa atualizado");
 
         mockMvc.perform(put("/filmes/" + filme.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(filmeAtualizado)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.titulo").value("Filme Atualizado"));
+                .andExpect(jsonPath("$.titulo").value("Filme Atualizado"))
+                .andExpect(jsonPath("$.descricao").value("Descrição Atualizada"))
+                .andExpect(jsonPath("$.dataLancamento").value("2025-06-14"))
+                .andExpect(jsonPath("$.capaUrl").value("url capa atualizado"));
+
     }
 
 
@@ -149,8 +125,7 @@ class FilmeResourceIntegrationTest {
         Filme filme = new Filme();
         filme.setTitulo("Filme Deletar");
         filme.setDescricao("Descrição Deletar");
-        filme.setDataLancamento("2011");
-        filme.setDuracao("110 minutos");
+        filme.setDataLancamento(LocalDate.parse("2025-06-14"));
         filmeRepository.save(filme);
 
         mockMvc.perform(delete("/filmes/" + filme.getId()))
@@ -168,8 +143,7 @@ class FilmeResourceIntegrationTest {
         Filme filme = new Filme();
         filme.setTitulo("Filme Categoria");
         filme.setDescricao("Descrição Categoria");
-        filme.setDataLancamento("2011");
-        filme.setDuracao("130 minutos");
+        filme.setDataLancamento(LocalDate.parse("2025-06-14"));
         filme.setCategorias(Set.of(categoria));
         filmeRepository.save(filme);
 

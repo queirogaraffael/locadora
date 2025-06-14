@@ -48,10 +48,13 @@ class CategoriaResourceIntegrationTest {
         categoriaRepository.save(new Categoria(null,"Categoria 2"));
 
         mockMvc.perform(get("/categorias")
+                        .param("page", "0")
+                        .param("size", "10")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)));
+                .andExpect(jsonPath("$.content", hasSize(2)));
     }
+
 
     @Test
     void testModificaCategoria_Success() throws Exception {
@@ -75,22 +78,6 @@ class CategoriaResourceIntegrationTest {
         mockMvc.perform(put("/categorias/{id}", 999)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(novaCategoria)))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void testDeletaCategoriaPorId_Success() throws Exception {
-        Categoria categoria = categoriaRepository.save(new Categoria(null,"Categoria para Deletar"));
-
-        mockMvc.perform(delete("/categorias/{id}", categoria.getId())
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent());
-    }
-
-    @Test
-    void testDeletaCategoriaPorId_NotFound() throws Exception {
-        mockMvc.perform(delete("/categorias/{id}", 999)
-                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 

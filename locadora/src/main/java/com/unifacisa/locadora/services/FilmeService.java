@@ -91,10 +91,17 @@ public class FilmeService {
         filme.setTitulo(dto.titulo());
         filme.setDescricao(dto.descricao());
         filme.setDataLancamento(dto.dataLancamento());
+        filme.setCapaUrl(dto.capaUrl());
 
         Filme filmeUpdated = filmeRepository.save(filme);
 
-        return new FilmeResponseDTO(filmeUpdated.getId(), filmeUpdated.getTitulo(), filmeUpdated.getTitulo(), filmeUpdated.getDataLancamento(), filmeUpdated.getCapaUrl());
+        return new FilmeResponseDTO(
+                filmeUpdated.getId(),
+                filmeUpdated.getTitulo(),
+                filmeUpdated.getDescricao(),
+                filmeUpdated.getDataLancamento(),
+                filmeUpdated.getCapaUrl()
+        );
     }
 
 
