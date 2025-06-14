@@ -5,19 +5,13 @@ import com.unifacisa.locadora.dtos.categoria.CategoriaResponseDTO;
 import com.unifacisa.locadora.dtos.categoria.CategoriaUpdateDTO;
 import com.unifacisa.locadora.exceptions.ResourceNotFoundException;
 import com.unifacisa.locadora.model.entities.Categoria;
-import com.unifacisa.locadora.model.entities.Filme;
 import com.unifacisa.locadora.repositories.CategoriaRepository;
 import com.unifacisa.locadora.repositories.FilmeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CategoriaService {

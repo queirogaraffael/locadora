@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
-@ConditionalOnExpression("${spring.profiles.active} == 'dev'")
 public class SwaggerConfig {
 
     @Bean

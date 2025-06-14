@@ -6,5 +6,5 @@ public record FilmeResponseDTO(Long id,
                                String titulo,
                                String descricao,
                                LocalDate dataLancamento,
-                               String capaUrl, Long idCategoria) {
+                               String capaUrl) {
 }

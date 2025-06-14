@@ -9,11 +9,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/categorias")
@@ -29,7 +29,7 @@ public class CategoriaResource {
             @ApiResponse(responseCode = "400", description = "Requisição inválida")
     })
     @PostMapping
-    public ResponseEntity<CategoriaResponseDTO> adicionaCategoria(@RequestBody CategoriaRequestDTO dto){
+    public ResponseEntity<CategoriaResponseDTO> adicionaCategoria(@RequestBody CategoriaRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(categoriaService.adicionaCategoria(dto));
     }
 
@@ -37,8 +37,10 @@ public class CategoriaResource {
     @Operation(summary = "Retorna todas as categorias paginada")
     @ApiResponse(responseCode = "200", description = "Retorna a lista de categorias")
     @GetMapping
-    public ResponseEntity<Page<CategoriaResponseDTO>> retornaTodasAsCategorias(){
-        return ResponseEntity.ok(categoriaService.retornaTodasAsCategoriasPaginadas());
+    public ResponseEntity<Page<CategoriaResponseDTO>> retornaTodasAsCategorias(@RequestParam(defaultValue = "0") int page,
+                                                                               @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(categoriaService.retornaTodasAsCategoriasPaginadas(pageable));
     }
 
 
@@ -50,7 +52,7 @@ public class CategoriaResource {
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor.")
     })
     @PutMapping("{id}")
-    public ResponseEntity<CategoriaResponseDTO> modificaCategoria(@PathVariable Long id, @RequestBody CategoriaUpdateDTO dto){
+    public ResponseEntity<CategoriaResponseDTO> modificaCategoria(@PathVariable Long id, @RequestBody CategoriaUpdateDTO dto) {
         return ResponseEntity.ok(categoriaService.update(id, dto));
     }
 
