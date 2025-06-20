@@ -60,12 +60,6 @@ O projeto possui um Dockerfile que gera a imagem da aplicação, e um arquivo `d
 
 ---
 
-## 🧪 Testes de Performance
-
-O sistema foi testado com a ferramenta **K6**, utilizando scripts para simular diferentes cenários de uso, incluindo testes de carga e smoke tests para endpoints de filmes e categorias.
-
----
-
 ## 📘 Documentação Swagger
 
 A documentação da API está disponível via Swagger, permitindo visualizar e testar os endpoints de forma simples e interativa através do navegador.
