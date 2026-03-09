@@ -1,10 +1,10 @@
-# 🎬 Locadora API
+# Locadora API
 
 A **Locadora API** é uma aplicação desenvolvida em **Java 17** com **Spring Boot**, projetada para gerenciar filmes e categorias de forma eficiente e escalável. A API utiliza **PostgreSQL** como banco de dados, cache com **Redis** e possui suporte a **paginação**, documentação interativa com **Swagger**, e testes de performance com **K6**. O projeto também está containerizado com **Docker** e **Docker Compose**, o que facilita a execução e implantação.
 
 ---
 
-## 📚 Visão Geral
+## Visão Geral
 
 O projeto adota uma **arquitetura em camadas**, separando responsabilidades para garantir manutenibilidade e escalabilidade:
 
@@ -16,7 +16,7 @@ O projeto adota uma **arquitetura em camadas**, separando responsabilidades para
 
 ---
 
-## 🧩 Funcionalidades Principais
+## Funcionalidades Principais
 
 - CRUD completo para filmes e categorias.
 - Paginação na listagem de filmes e categorias.
@@ -29,7 +29,7 @@ O projeto adota uma **arquitetura em camadas**, separando responsabilidades para
 
 ---
 
-## ⚙️ Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 - Java 17
 - Spring Boot (Spring Web, Spring Data JPA, Spring Validation, Spring Cache)
@@ -42,31 +42,31 @@ O projeto adota uma **arquitetura em camadas**, separando responsabilidades para
 
 ---
 
-## 📦 Estrutura do Projeto
+## Estrutura do Projeto
 
 A estrutura do projeto é organizada em pastas que representam claramente cada camada: controllers, serviços, entidades, DTOs, repositórios e configurações. Também estão incluídos os arquivos para Docker e configuração da aplicação.
 
 ---
 
-## 🔧 Configurações
+## Configurações
 
 O banco de dados utilizado é o **PostgreSQL**, com as configurações de acesso definidas no arquivo de propriedades. O Redis é configurado como provedor de cache.
 
 ---
 
-## 🐳 Docker
+## Docker
 
 O projeto possui um Dockerfile que gera a imagem da aplicação, e um arquivo `docker-compose.yml` que orquestra a aplicação, o banco de dados PostgreSQL e o Redis.
 
 ---
 
-## 📘 Documentação Swagger
+## Documentação Swagger
 
 A documentação da API está disponível via Swagger, permitindo visualizar e testar os endpoints de forma simples e interativa através do navegador.
 
 ---
 
-## 🛠 Exemplos de Endpoints com Paginação
+## Exemplos de Endpoints com Paginação
 
 A API suporta paginação nas requisições de filmes e categorias, com parâmetros para definir o número da página e a quantidade de itens por página. Por exemplo:
 
@@ -76,7 +76,7 @@ A API suporta paginação nas requisições de filmes e categorias, com parâmet
 
 ---
 
-## 🚀 Como Executar Localmente
+## Como Executar Localmente
 
 Para executar o projeto localmente:
 
